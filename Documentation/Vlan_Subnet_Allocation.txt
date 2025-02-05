@@ -1,0 +1,25 @@
+**VLAN and Subnet Allocation Document**
+
+### VLAN Allocations and Subnet Details
+
+| VLAN ID | VLAN Name      | Subnet               | Subnet Mask       | Network Address| Broadcast Address|
+|---------|--------------  |----------------------|-------------------|----------------|-----------------|
+| 10      | Admin          | 192.168.59.0/27      | 255.255.255.224   | 192.168.59.0   | 192.168.59.31   |
+| 20      | Sales          | 192.168.59.32/27     | 255.255.255.224   | 192.168.59.32  | 192.168.59.63   |
+| 30      | HR             | 192.168.59.64/27     | 255.255.255.224   | 192.168.59.64  | 192.168.59.95   |
+| 40      | IT             | 192.168.59.96/27     | 255.255.255.224   | 192.168.59.96  | 192.168.59.127  |
+| 50      | Development    | 192.168.59.128/27    | 255.255.255.224   | 192.168.59.128 | 192.168.59.159  |
+| 60      | Server         | 192.168.59.160/28    | 255.255.255.240   | 192.168.59.160 | 192.168.59.175  |
+| 70      | VoIP           | 192.168.59.192/27    | 255.255.255.224   | 192.168.59.192 | 192.168.59.223  |
+| 80      | Guest          | 192.168.59.224/28    | 255.255.255.240   | 192.168.59.224 | 192.168.59.239  |
+
+### Additional Notes:
+- **Admin VLAN (10)** is used for network administration and has the highest security level.
+- **Sales VLAN (20)** is designated for the sales department.
+- **HR VLAN (30)** is assigned for human resources.
+- **IT VLAN (40)** includes IT personnel and related infrastructure.
+- **Development VLAN (50)** houses developers and their resources.
+- **Server VLAN (60)** is allocated for servers and backend services.
+- **VoIP VLAN (70)** is used for voice communications.
+- **Guest VLAN (80)** is allocated for guest users and isolated from internal resources.
+
