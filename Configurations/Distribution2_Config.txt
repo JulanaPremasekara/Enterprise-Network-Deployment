@@ -1,0 +1,102 @@
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10-80 priority 28672
+
+interface Port-channel1
+ switchport trunk allowed vlan 10-80
+ switchport mode trunk
+
+interface GigabitEthernet1/0/1
+ no switchport
+ ip address 192.168.59.177 255.255.255.252
+ duplex auto
+ speed auto
+
+interface GigabitEthernet1/0/2
+ no switchport
+ ip address 192.168.59.181 255.255.255.252
+ duplex auto
+ speed auto
+
+interface GigabitEthernet1/0/3 - 1/0/10
+ switchport trunk allowed vlan 10-80
+ switchport mode trunk
+
+interface Vlan10
+ mac-address 0060.5c12.7e02
+ ip address 192.168.59.3 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 1 ip 192.168.59.1
+ standby 1 preempt
+
+interface Vlan20
+ mac-address 0060.5c12.7e03
+ ip address 192.168.59.35 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 2 ip 192.168.59.33
+ standby 2 preempt
+
+interface Vlan30
+ mac-address 0060.5c12.7e04
+ ip address 192.168.59.67 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 3 ip 192.168.59.65
+ standby 3 preempt
+
+interface Vlan40
+ mac-address 0060.5c12.7e05
+ ip address 192.168.59.99 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 4 ip 192.168.59.97
+ standby 4 preempt
+
+interface Vlan50
+ mac-address 0060.5c12.7e06
+ ip address 192.168.59.131 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 5 ip 192.168.59.129
+ standby 5 preempt
+
+interface Vlan60
+ mac-address 0060.5c12.7e07
+ ip address 192.168.59.164 255.255.255.240
+ standby 6 ip 192.168.59.163
+ standby 6 preempt
+
+interface Vlan70
+ mac-address 0060.5c12.7e08
+ ip address 192.168.59.195 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 7 ip 192.168.59.193
+ standby 7 preempt
+
+interface Vlan80
+ mac-address 0060.5c12.7e09
+ ip address 192.168.59.227 255.255.255.240
+ ip helper-address 192.168.59.162
+ ip access-group 120 in
+ standby 8 ip 192.168.59.225
+ standby 8 preempt
+
+router ospf 1
+ router-id 4.4.4.4
+ log-adjacency-changes
+ network 192.168.59.3 0.0.0.0 area 0
+ network 192.168.59.35 0.0.0.0 area 0
+ network 192.168.59.67 0.0.0.0 area 0
+ network 192.168.59.99 0.0.0.0 area 0
+ network 192.168.59.131 0.0.0.0 area 0
+ network 192.168.59.164 0.0.0.0 area 0
+ network 192.168.59.195 0.0.0.0 area 0
+ network 192.168.59.227 0.0.0.0 area 0
+ network 192.168.59.177 0.0.0.0 area 0
+ network 192.168.59.181 0.0.0.0 area 0
+
+ip classless
+
+ip flow-export version 9
+
+access-list 120 deny icmp 192.168.59.224 0.0.0.15 192.168.59.0 0.0.0.255
+access-list 120 deny ip 192.168.59.224 0.0.0.15 192.168.59.0 0.0.0.255
+access-list 120 permit ospf any any
+access-list 120 permit udp any eq bootpc any eq bootps
+access-list 120 permit ip 192.168.59.224 0.0.0.15 any

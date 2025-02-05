@@ -1,0 +1,52 @@
+! ==============================================
+! Access Switch 2 Configuration (Cleaned)
+! ==============================================
+
+hostname access2
+
+! Enable PVST (Per-VLAN Spanning Tree)
+spanning-tree mode pvst
+spanning-tree extend system-id
+
+! ==============================================
+! Access Ports (PCs, End Devices)
+! ==============================================
+
+interface FastEthernet0/1
+ switchport access vlan 30
+ switchport mode access
+ spanning-tree portfast
+
+interface FastEthernet0/2
+ switchport access vlan 30
+ switchport mode access
+ spanning-tree portfast
+
+interface FastEthernet0/6
+ switchport mode access
+ switchport voice vlan 70
+ spanning-tree portfast
+
+! ==============================================
+! Trunk Ports (Uplink to Distribution Switch)
+! ==============================================
+
+interface FastEthernet0/3
+ switchport trunk allowed vlan 30,70
+ switchport mode trunk
+
+interface FastEthernet0/4
+ switchport trunk allowed vlan 30,70
+ switchport mode trunk
+
+! ==============================================
+! VLAN Interface Configuration
+! ==============================================
+
+interface Vlan1
+ no ip address
+ shutdown
+
+! ==============================================
+! End of Configuration
+! ==============================================

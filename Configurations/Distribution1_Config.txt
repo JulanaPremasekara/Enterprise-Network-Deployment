@@ -1,0 +1,131 @@
+### DISTRIBUTION1 CONFIGURATION ###
+
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10-80 priority 24576
+
+## Port-Channel Configuration ##
+interface Port-channel1
+ switchport trunk allowed vlan 10-80
+ switchport mode trunk
+
+## Uplink Interfaces to Core Routers ##
+interface GigabitEthernet1/0/1
+ no switchport
+ ip address 192.168.59.254 255.255.255.252
+ duplex auto
+ speed auto
+
+interface GigabitEthernet1/0/2
+ no switchport
+ ip address 192.168.59.250 255.255.255.252
+ duplex auto
+ speed auto
+
+## Trunk Links for VLANs ##
+interface GigabitEthernet1/0/3
+ switchport trunk allowed vlan 10-80
+ switchport mode trunk
+
+interface GigabitEthernet1/0/4
+ switchport trunk allowed vlan 10-80
+ switchport mode trunk
+
+interface GigabitEthernet1/0/5
+ switchport trunk allowed vlan 10-80
+ switchport mode trunk
+
+interface GigabitEthernet1/0/6
+ switchport trunk allowed vlan 10-80
+
+interface GigabitEthernet1/0/7
+ switchport trunk allowed vlan 10-80
+
+## VLAN Interfaces (SVIs) ##
+interface Vlan10
+ mac-address 0060.4729.7701
+ ip address 192.168.59.2 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 1 ip 192.168.59.1
+ standby 1 priority 110
+ standby 1 preempt
+
+interface Vlan20
+ mac-address 0060.4729.7702
+ ip address 192.168.59.34 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 2 ip 192.168.59.33
+ standby 2 priority 110
+ standby 2 preempt
+
+interface Vlan30
+ mac-address 0060.4729.7703
+ ip address 192.168.59.66 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 3 ip 192.168.59.65
+ standby 3 priority 110
+ standby 3 preempt
+
+interface Vlan40
+ mac-address 0060.4729.7704
+ ip address 192.168.59.98 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 4 ip 192.168.59.97
+ standby 4 priority 110
+ standby 4 preempt
+
+interface Vlan50
+ mac-address 0060.4729.7705
+ ip address 192.168.59.130 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 5 ip 192.168.59.129
+ standby 5 priority 110
+ standby 5 preempt
+
+interface Vlan60
+ mac-address 0060.4729.7706
+ ip address 192.168.59.161 255.255.255.240
+ standby 6 ip 192.168.59.163
+ standby 6 priority 110
+ standby 6 preempt
+
+interface Vlan70
+ mac-address 0060.4729.7707
+ ip address 192.168.59.194 255.255.255.224
+ ip helper-address 192.168.59.162
+ standby 7 ip 192.168.59.193
+ standby 7 priority 110
+ standby 7 preempt
+
+## Guest VLAN 80 with ACL ##
+interface Vlan80
+ mac-address 0060.4729.7708
+ ip address 192.168.59.226 255.255.255.240
+ ip helper-address 192.168.59.162
+ ip access-group 120 in
+ standby 8 ip 192.168.59.225
+ standby 8 priority 110
+ standby 8 preempt
+
+## OSPF Configuration ##
+router ospf 1
+ router-id 3.3.3.3
+ log-adjacency-changes
+ network 192.168.59.2 0.0.0.0 area 0
+ network 192.168.59.34 0.0.0.0 area 0
+ network 192.168.59.66 0.0.0.0 area 0
+ network 192.168.59.98 0.0.0.0 area 0
+ network 192.168.59.130 0.0.0.0 area 0
+ network 192.168.59.161 0.0.0.0 area 0
+ network 192.168.59.194 0.0.0.0 area 0
+ network 192.168.59.226 0.0.0.0 area 0
+ network 192.168.59.250 0.0.0.0 area 0
+ network 192.168.59.254 0.0.0.0 area 0
+
+## ACLs for Guest VLAN ##
+access-list 120 deny icmp 192.168.59.224 0.0.0.15 192.168.59.0 0.0.0.255
+access-list 120 deny ip 192.168.59.224 0.0.0.15 192.168.59.0 0.0.0.255
+access-list 120 permit ospf any any
+access-list 120 permit udp any eq bootpc any eq bootps
+access-list 120 permit ip 192.168.59.224 0.0.0.15 any
+
+### END OF CONFIGURATION ###

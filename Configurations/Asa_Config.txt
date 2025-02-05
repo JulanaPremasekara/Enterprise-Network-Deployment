@@ -1,0 +1,125 @@
+!
+! ASA Firewall Configuration
+! Provides firewall protection, VPN access, and NAT for internal networks
+!
+
+ASA Version 9.6(1)
+!
+hostname ASA
+!
+domain-name wr
+!
+
+!
+! Interface Configuration
+interface GigabitEthernet1/1
+ nameif outside
+ security-level 0
+ ip address 192.168.59.190 255.255.255.252
+!
+interface GigabitEthernet1/2
+ nameif inside1
+ security-level 100
+ ip address 192.168.59.186 255.255.255.252
+!
+interface GigabitEthernet1/3
+ nameif inside2
+ security-level 100
+ ip address 192.168.59.46 255.255.255.252
+!
+interface GigabitEthernet1/4-8
+ no nameif
+ no security-level
+ no ip address
+ shutdown
+!
+interface Management1/1
+ management-only
+ no nameif
+ no security-level
+ no ip address
+ shutdown
+!
+
+!
+! Enable WebVPN on the outside interface
+webvpn
+ enable outside
+!
+
+!
+! Network Objects for NAT & Security Policies
+object network Dev-Server
+ host 192.169.59.133
+!
+object network INSIDE-NETWORK
+ subnet 192.168.59.0 255.255.255.0
+ nat (inside2,outside) dynamic interface
+!
+
+!
+! Default Route to ISP Router
+route outside 0.0.0.0 0.0.0.0 192.168.59.189 1
+!
+
+!
+! Access Control List (ACL) - Allows HTTPS, SSH, and ICMP
+access-list outside_access_in extended permit tcp any any eq 443
+access-list outside_access_in extended permit tcp any any eq 22
+access-list outside_access_in extended permit icmp any any
+!
+access-group outside_access_in in interface outside
+!
+
+!
+! VPN Configuration
+! Defines group policy for VPN users
+
+group-policy vpnp2 internal
+group-policy vpnp2 attributes
+ vpn-tunnel-protocol ssl-clientless
+ webvpn
+  url-list value development
+!
+username dev1 password jT9MNTRG6yUuFggN encrypted
+username dev1 attributes
+ vpn-group-policy vpnp2
+!
+
+!
+! Define Remote Access VPN Tunnel Group
+tunnel-group vpnpro1 type remote-access
+tunnel-group vpnpro1 general-attributes
+ default-group-policy vpnp2
+!
+
+!
+! Inspection Policy
+class-map inspection_default
+ match default-inspection-traffic
+!
+policy-map type inspect dns preset_dns_map
+ parameters
+  message-length maximum 512
+policy-map global_policy
+ class inspection_default
+  inspect dns preset_dns_map
+  inspect ftp
+  inspect tftp
+!
+service-policy global_policy global
+!
+
+!
+! Timeout Configuration
+telnet timeout 5
+ssh timeout 5
+!
+
+!
+! OSPF Routing Configuration
+router ospf 1
+ log-adjacency-changes
+ network 0.0.0.0 0.0.0.0 area 0
+ default-information originate
+!

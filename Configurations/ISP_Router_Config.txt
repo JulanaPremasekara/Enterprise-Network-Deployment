@@ -1,0 +1,73 @@
+!
+! ISP Router Configuration
+! Provides internet connectivity & NAT for internal networks
+!
+
+spanning-tree mode pvst  ! Enables Per-VLAN Spanning Tree (PVST)
+
+!
+! Simulated Internet Loopback Interface (for testing reachability)
+interface Loopback0
+ description Simulated Internet
+ ip address 8.8.8.8 255.255.255.255
+ ip nat inside
+!
+
+!
+! Connection to ASA (Outside Interface)
+interface FastEthernet0/0
+ description Connection to ASA (Outside)
+ ip address 192.168.59.189 255.255.255.252
+ ip nat outside
+ duplex auto
+ speed auto
+!
+
+!
+! Remote Users Network (for VPN or remote clients)
+interface FastEthernet0/1
+ description Remote Users Network
+ ip address 192.168.100.1 255.255.255.224
+ duplex auto
+ speed auto
+!
+
+!
+! Disable VLAN 1 (Not used for security reasons)
+interface Vlan1
+ no ip address
+ shutdown
+!
+
+!
+! NAT Configuration (Overload to ASA Outside Interface)
+ip nat inside source list 1 interface FastEthernet0/0 overload
+!
+
+!
+! Default Route to ASA
+ip route 0.0.0.0 0.0.0.0 192.168.59.190 
+!
+
+!
+! Flow Export (NetFlow - Optional for monitoring traffic)
+ip flow-export version 9
+!
+
+!
+! Access Control List (ACL) for NAT
+access-list 1 permit 192.168.59.0 0.0.0.255  ! Allow Internal Network
+access-list 1 permit 192.168.100.0 0.0.0.255 ! Allow Remote Users Network
+!
+
+!
+! Console & VTY Line Configuration
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+end

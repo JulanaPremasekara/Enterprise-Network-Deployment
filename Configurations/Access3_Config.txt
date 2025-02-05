@@ -1,0 +1,47 @@
+hostname Access3
+
+spanning-tree mode pvst
+spanning-tree extend system-id
+
+! Access Ports for VLAN 10
+interface FastEthernet0/1
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+
+interface FastEthernet0/2
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+
+interface FastEthernet0/5
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+
+! Trunk Ports
+interface FastEthernet0/3
+ switchport trunk allowed vlan 10,20,30,40,50,60,70,80
+ switchport mode trunk
+
+interface FastEthernet0/4
+ switchport trunk allowed vlan 10,20,30,40,50,60,70,80
+ switchport mode trunk
+
+! Voice VLAN Configuration for VoIP Devices
+interface FastEthernet0/6
+ switchport mode access
+ switchport voice vlan 70
+ spanning-tree portfast
+
+! Uplink to Distribution/Core Switches
+interface GigabitEthernet0/1
+ switchport trunk native vlan 40
+ switchport trunk allowed vlan 10,20,30,40,50,80
+ switchport mode trunk
+ spanning-tree portfast
+
+! Default VLAN Interface (Disabled)
+interface Vlan1
+ no ip address
+ shutdown

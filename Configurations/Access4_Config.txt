@@ -1,0 +1,46 @@
+hostname access4
+
+! Enable PVST spanning-tree mode
+spanning-tree mode pvst
+spanning-tree extend system-id
+
+! ==== Access Ports for VLAN 50 ====
+interface FastEthernet0/1
+ switchport access vlan 50
+ switchport mode access
+ spanning-tree portfast
+
+interface FastEthernet0/2
+ switchport access vlan 50
+ switchport mode access
+ spanning-tree portfast
+
+interface FastEthernet0/5
+ switchport access vlan 50
+ switchport mode access
+ spanning-tree portfast
+
+! ==== Trunk Ports to Distribution Switch ====
+interface FastEthernet0/3
+ switchport trunk allowed vlan 50,70
+ switchport mode trunk
+
+interface FastEthernet0/4
+ switchport trunk allowed vlan 50,70
+ switchport mode trunk
+
+! ==== VoIP Device (Phones) Port ====
+interface FastEthernet0/6
+ switchport access vlan 50
+ switchport voice vlan 70
+ spanning-tree portfast
+
+! ==== Uplink Trunk to Distribution Switch ====
+interface GigabitEthernet0/1
+ switchport trunk allowed vlan 50,70
+ switchport mode trunk
+
+! ==== Disable Unused VLAN1 ====
+interface Vlan1
+ no ip address
+ shutdown
